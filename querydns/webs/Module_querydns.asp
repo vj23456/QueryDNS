@@ -415,7 +415,7 @@ function validateInput(input, minValue, maxValue) {
 										</div>
 										<div style="margin: 10px 0 10px 5px;" class="splitLine"></div>
 										<div class="SimpleNote">
-	                                      <a href="https://github.com/natesales/q" target="_blank"><em>DNS查询</em></a>&nbsp;是一款由Golang写的支持 <em style='color: gold;'>UDP / TCP / DNS over TLS / DNS over Https / DNS over QUIC  </em>等DNS查询的强大网络工具。
+	                                      <a href="https://github.com/natesales/q" target="_blank"><em>DNS查询</em></a>&nbsp;是一款由Golang写的支持 <em style='color: gold;'>UDP / TCP / DNS over TLS / DNS over Https / DNS over QUIC  </em>等DNS可用性查询的强大网络工具。
 											<span><a type="button" href="https://github.com/vj23456/QueryDNS" target="_blank" class="ks_btn" style="margin-left:5px;" >项目地址</a></span>
 											<span><a type="button" class="ks_btn" href="javascript:void(0);" onclick="get_log(1)" style="margin-left:5px;">插件日志</a></span>
 										</div>
