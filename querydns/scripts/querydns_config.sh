@@ -20,6 +20,46 @@ unset_lock(){
 	rm -rf ${LOCK_FILE}
 }
 
+urldecode(){
+  echo -e "$(sed 's/+/ /g;s/%\(..\)/\\x\1/g;')"
+}
+
+b(){
+	if [ -f "/koolshare/bin/base64_decode" ]; then #HND有这个
+		base=base64_decode
+		echo $base
+	elif [ -f "/bin/base64" ]; then #HND是这个
+		base=base64
+		echo $base
+	elif [ -f "/koolshare/bin/base64" ]; then #网件R7K是这个
+		base=base64
+		echo $base
+	elif [ -f "/sbin/base64" ]; then
+		base=base64
+		echo $base
+	else
+		echo_date "【错误】固件缺少base64decode文件，无法正常订阅，直接退出" >> $LOG_FILE
+		echo_date "解决办法请查看MerlinClash Wiki" >> $LOG_FILE
+		echo BBABBBBC >> $LOG_FILE
+		exit 1
+	fi
+}
+decode_url_link(){
+	local link=$1
+	local len=$(echo $link | wc -L)
+	local mod4=$(($len%4))
+	b64=$(b)
+	echo_date "b64=$b64" >> LOG_FILE
+	if [ "$mod4" -gt "0" ]; then
+		local var="===="
+		local newlink=${link}${var:$mod4}
+		echo -n "$newlink" | sed 's/-/+/g; s/_/\//g' | $b64 -d 2>/dev/null
+	else
+		echo -n "$link" | sed 's/-/+/g; s/_/\//g' | $b64 -d 2>/dev/null
+	fi
+}
+
+
 close_querydns_process(){
 	querydns_process=$(pidof querydns)
 	if [ -n "${querydns_process}" ]; then
@@ -33,7 +73,7 @@ save_user_dns(){
 	i=0
 	while [ "$i" -lt "$count" ]
 	do
-		txt=${querydns_uesr_domain_content_$i}
+		txt=$(${querydns_uesr_domain_content}_$i)
 		#开始拼接文件值，然后进行base64解码，写回文件
 		content=${content}${txt}
 		let i=i+1
@@ -91,18 +131,22 @@ check_dns() {
 	fi
 	userdns_PATH="/koolshare/configs/querydns/user_dns.txt" 
 	userdns_size=$(ls -l "$userdns_PATH" 2>/dev/null | awk '{print $5}')
-	if [ -f "$userdns_PATH" ] && [ "$userdns_size" -gt 0 ]; then
-		echo_date "🔍开始查询用户自定义DNS"
-		lines="$(cat /koolshare/configs/querydns/user_dns.txt | awk '{print $0}')"
-		for line in $lines
-		do
-			echo_date "▶️开始查询${line}"
-			echo "--------------------------------------------------------------------------------------------"
-			querydns @$line $domain $command 2>&1
-			echo "--------------------------------------------------------------------------------------------"
-		done
+	if [ "${querydns_check_user}" == "1" ]; then
+		if [ -f "$userdns_PATH" ] && [ "$userdns_size" -gt 0 ]; then
+			echo_date "🔍开始查询用户自定义DNS"
+			lines="$(cat /koolshare/configs/querydns/user_dns.txt | awk '{print $0}')"
+			for line in $lines
+			do
+				echo_date "▶️开始查询${line}"
+				echo "--------------------------------------------------------------------------------------------"
+				querydns @$line $domain $command 2>&1
+				echo "--------------------------------------------------------------------------------------------"
+			done
+		else
+			echo_date "🤷‍♂️用户自定义DNS列表为空，跳过"
+		fi
 	else
-		echo_date "🤷‍♂️未检测到用户自定义DNS，跳过"
+		echo_date "🤷‍♂️查询自定义DNS未开启，跳过"
 	fi
 	close_querydns_process
 }
@@ -111,10 +155,12 @@ case $2 in
 check)
 	set_lock
 	rm -rf ${LOG_FILE}
-	save_user_dns
     check_dns | tee -a ${LOG_FILE}
     echo DD01N05S | tee -a ${LOG_FILE}
 	unset_lock
+	;;
+save)
+	save_user_dns
 	;;
 getln)
     if [ -f "/koolshare/configs/querydns/user_dns.txt" ]; then

@@ -116,6 +116,18 @@ i {
 	line-height:1.8;
 	visibility:hidden;
 }
+.contentMKP_qis {
+	position: absolute;
+	border-radius:10px;
+	z-index: 10;
+	margin-left: 30%;
+	top: 240px;
+	width:800px;
+	height:auto;
+	box-shadow: 3px 3px 10px #000;
+	background: rgba(0,0,0,0.85);
+	display:none;
+}
 .pop_div_bg{
 }
 .QISform_wireless {
@@ -134,7 +146,7 @@ var count_down;
 var _responseLen;
 var STATUS_FLAG;
 var noChange = 0;
-var params_check = ['querydns_check_basic','querydns_parameter_time','querydns_parameter_messages','querydns_parameter_typea','querydns_parameter_type4a'];
+var params_check = ['querydns_check_basic','querydns_check_user','querydns_parameter_time','querydns_parameter_messages','querydns_parameter_typea','querydns_parameter_type4a'];
 var params_input = ['querydns_check_domain'];
 
 String.prototype.myReplace = function(f, e){
@@ -143,7 +155,7 @@ String.prototype.myReplace = function(f, e){
 }
 
 function init() {
-	userdns_show();
+	show_menu(menu_hook);
 	register_event();
 	get_dbus_data();
 }
@@ -208,7 +220,7 @@ function register_event(){
 function get_usertxt() {
 	var id = parseInt(Math.random() * 100000000);
 	var dbus_post={};
-	var postData = {"id": id, "method": "querydns_config.sh", "params": ["getln"], "fields": db_querydns};
+	var postData = {"id": id, "method": "querydns_config.sh", "params": ["getln"], "fields": ""};
 	$.ajax({
 		type: "POST",
 		cache:false,
@@ -219,42 +231,40 @@ function get_usertxt() {
 		}
 	});
 }
-
-function userdns_show() {
-	get_usertxt()
+//通用编辑框
+function common_text_editor_open(type, title) {
+	get_usertxt();
+	$("#common_text_editor_title").html(title);
+	$("#common_text_editor_content").html('更多设置内容，请查阅 <a href="https://wiki.metacubex.one/config/sniff/" target="_blank">Mihomo帮助文档-Sniffer</a> 。');
 	$.ajax({
 		url: '/_temp/querydns_user.txt',
 		type: 'GET',
 		cache: false,
 		dataType: 'text',
 		success: function (res) {
-			$('#querydns_uesr_domain').val(res);
-		},
-		error: function(xhr) {
-			$('#querydns_uesr_domain').val('');
+			$('#common_text_editor_text').val(res);
 		}
-		});
+	});
 	//展示
-	$("#querydns_uesr_domain").fadeIn(200);
+	$("#common_text_editor").fadeIn(200);
+	//给common_text_editor_save绑定点击事件
+	$("#common_text_editor_save").unbind("click").click(function(){
+		common_text_editor_save(type);
+	});
 }
-function save(flag){
-	var db_querydns = {};
+
+function common_text_editor_close() {
+	$('#common_text_editor_text').val('');
+	$("#common_text_editor").fadeOut(200);
+}
+
+function common_text_editor_save(type) {
+	//采取分段保存
 	var dbus_post = {};
 	var str = "";
 	var n = 5000;
 	var i = 0;
-	var sr_content = E("querydns_uesr_domain").value;
-	if(flag){
-	console.log(flag)
-	}
-	for (var i = 0; i < params_check.length; i++) {
-		db_querydns[params_check[i]] = E(params_check[i]).checked ? '1' : '0';
-	}
-	for (var i = 0; i < params_input.length; i++) {
-		if (E(params_input[i])) {
-			db_querydns[params_input[i]] = E(params_input[i]).value;
-		}
-	} 
+	var sr_content = E("common_text_editor_text").value;
 	if (sr_content != "") {
 		str = Base64.encode(encodeURIComponent(sr_content));
 		for (l = str.length; i < l / n; i++) {
@@ -265,6 +275,38 @@ function save(flag){
 	} else {
 		dbus_post[`querydns_uesr_domain_content_0`] = db_querydns[`querydns_uesr_domain_content_0`] = " ";
 		dbus_post[`querydns_uesr_domain_content_count`] = db_querydns[`querydns_uesr_domain_content_count`] = 1;
+	}
+	//post data
+	var id = parseInt(Math.random() * 100000000);
+	var postData = { "id": id, "method": "querydns_config.sh", "params": ["save"], "fields": ""};
+	$.ajax({
+		type: "POST",
+		cache: false,
+		url: "/_api/",
+		data: JSON.stringify(postData),
+		dataType: "json",
+		error: function (xhr) {
+
+		},
+		success: function (response) {
+			refreshpage();
+		}
+	});
+}
+
+
+function save(flag){
+	var db_querydns = {};
+	if(flag){
+	console.log(flag)
+	}
+	for (var i = 0; i < params_check.length; i++) {
+		db_querydns[params_check[i]] = E(params_check[i]).checked ? '1' : '0';
+	}
+	for (var i = 0; i < params_input.length; i++) {
+		if (E(params_input[i])) {
+			db_querydns[params_input[i]] = E(params_input[i]).value;
+		}
 	}
 	var id = parseInt(Math.random() * 100000000);
 	var postData = {"id": id, "method": "querydns_config.sh", "params": ["check"], "fields": db_querydns};
@@ -438,6 +480,21 @@ function validateInput(input, minValue, maxValue) {
 			</tr>
 		</table>
 	</div>
+	<!-- 通用编辑框-->
+    <div id="common_text_editor" class="contentMKP_qis" style="box-shadow: 3px 3px 10px #000;margin-top: -65px;display: none;">
+		<div class="user_title">编辑<span id="common_text_editor_title">未知</span></div>
+		<div style="margin-left:15px"><i>1&nbsp;&nbsp;更改配置内容后，需要重启Merlin Clash才能生效；</i></div>
+		<div style="margin-left:15px"><i>2&nbsp;&nbsp;<span id="common_text_editor_content">更多设置内容，请查阅https://docs.metacubex.one/</span></i></div>
+		<div style="margin: 10px 10px 10px 10px;width:98%;text-align:center;">
+			<textarea cols="63" rows="16" wrap="off" id="common_text_editor_text" autocomplete="off" autocorrect="off"
+			autocapitalize="off" spellcheck="false"
+			style="border: none; width: 760px;height:400px ;background: black; color: white; resize: none;"></textarea>
+		</div>
+		<div style="margin-top:5px;padding-bottom:10px;width:100%;text-align:center;">
+			<input id="common_text_editor_save" class="button_gen" type="button"  value="保存设置">
+			<input id="edit_node" class="button_gen" type="button" onclick="common_text_editor_close();" value="返回主界面">
+		</div>
+	</div>
 	<!--=============================================================================================================-->
 	<table class="content" align="center" cellpadding="0" cellspacing="0">
 		<tr>
@@ -488,20 +545,16 @@ function validateInput(input, minValue, maxValue) {
 													</tr>
 												</thead>
 												<tr>
-													<th>查询插件内置常用DNS</th>
+													<th>查询插件预设DNS</th>
 													<td>
 														<input type="checkbox" id="querydns_check_basic" style="vertical-align:middle;">
 													</td>
 												</tr>
 												<tr>
-													<th>查询选项</th>
+													<th>查询自定义DNS</th>
 													<td>
-														<p></p>
-														<p style='color: gold;'><input type="checkbox" id="querydns_parameter_time" style="vertical-align:middle;">&nbsp;显示时间统计</p>
-														<p style='color: gold;'><input type="checkbox" id="querydns_parameter_messages" style="vertical-align:middle;">&nbsp;显示详细日志消息</p>
-														<p style='color: gold;'><input type="checkbox" id="querydns_parameter_typea" style="vertical-align:middle;">&nbsp;返回IPv4结果</p>
-														<p style='color: gold;'><input type="checkbox" id="querydns_parameter_type4a" style="vertical-align:middle;">&nbsp;返回IPv6结果</p>
-														<p></p>
+														<input type="checkbox" id="querydns_check_user" style="vertical-align:middle;">
+														<a type="button" id="querydns_user_open" class="ks_btn" style="margin-top: 8px;margin-left: 10px; vertical-align: middle; cursor:pointer;" onclick="common_text_editor_open('dns','自定义DNS');" >编辑自定义DNS</a>
 													</td>
 												</tr>
 												<tr>
@@ -512,11 +565,22 @@ function validateInput(input, minValue, maxValue) {
 													</td>
 												</tr>
 												<tr>
+													<th>查询选项</th>
+													<td>
+														<p></p>
+														<p style='color: gold;'><input type="checkbox" id="querydns_parameter_time" style="vertical-align:middle; margin-right: 18px;">显示时间统计</p>
+														<p style='color: gold;'><input type="checkbox" id="querydns_parameter_messages" style="vertical-align:middle; margin-right: 18px;">显示详细日志消息</p>
+														<p style='color: gold;'><input type="checkbox" id="querydns_parameter_typea" style="vertical-align:middle; margin-right: 18px;">返回IPv4结果</p>
+														<p style='color: gold;'><input type="checkbox" id="querydns_parameter_type4a" style="vertical-align:middle; margin-right: 18px;">返回IPv6结果</p>
+														<p></p>
+													</td>
+												</tr>
+<!-- 												<tr>
 													<th>自定义DNS</th>
 													<td>
 													<textarea rows="7" wrap="on" id="querydns_uesr_domain" class="input_3_table" name="querydns_uesr_domain" style="width: 80%; height: 150px; resize: none;" placeholder="请输入您想查询的DNS，如：&#10;223.5.5.5&#10;tls://dot.pub&#10;https://doh.pub/dns-query&#10;quic://dns.yuguan.xyz" ></textarea>
 													</td>
-												</tr>
+												</tr> -->
 											</table>
 										</div>
 										
