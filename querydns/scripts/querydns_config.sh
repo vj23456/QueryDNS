@@ -28,6 +28,30 @@ close_querydns_process(){
 		kill -9 "${querydns_process}" >/dev/null 2>&1
 	fi
 }
+save_user_dns(){
+	if [ -n "$count" ];then
+	i=0
+	while [ "$i" -lt "$count" ]
+	do
+		txt=${querydns_uesr_domain_content_$i}
+		#开始拼接文件值，然后进行base64解码，写回文件
+		content=${content}${txt}
+		let i=i+1
+	done
+	echo $content| base64_decode > /tmp/querydns_user.txt
+	if [ -f /tmp/querydns_user.txt ]; then
+		cat /tmp/querydns_user.txt | urldecode > /koolshare/configs/querydns/user_dns.txt 2>&1
+		rm -rf /tmp/querydns_user.txt
+	fi
+	#dbus remove jdqd_jd_script_content_custom
+	customs=`dbus list querydns_uesr_domain_content_ | cut -d "=" -f 1`
+	for custom in $customs
+	do
+		dbus remove $custom
+	done
+fi
+
+}
 
 check_dns() {
 	domain="${querydns_check_domain}"
@@ -87,6 +111,7 @@ case $2 in
 check)
 	set_lock
 	rm -rf ${LOG_FILE}
+	save_user_dns
     check_dns | tee -a ${LOG_FILE}
     echo DD01N05S | tee -a ${LOG_FILE}
 	unset_lock

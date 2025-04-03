@@ -143,7 +143,7 @@ String.prototype.myReplace = function(f, e){
 }
 
 function init() {
-	show_menu(menu_hook);
+	userdns_show();
 	register_event();
 	get_dbus_data();
 }
@@ -205,10 +205,42 @@ function register_event(){
 		}
 	});
 }
+function get_usertxt() {
+	var id = parseInt(Math.random() * 100000000);
+	var dbus_post={};
+	var postData = {"id": id, "method": "querydns_config.sh", "params":[getln], "fields": dbus_post};
+	intoQueue({
+		type: "POST",
+		cache:false,
+		url: "/_api/",
+		data: JSON.stringify(postData),
+		dataType: "json",
+		success: function(response) {
+		}
+	});
+}
 
-
+function userdns_show() {
+	get_usertxt()
+	intoQueue({
+		url: '/_temp/querydns_user.txt',
+		type: 'GET',
+		cache: false,
+		dataType: 'text',
+		success: function (res) {
+			$('#querydns_uesr_domain').val(res);
+		}
+		});
+	//展示
+	$("#querydns_uesr_domain").fadeIn(200);
+}
 function save(flag){
 	var db_querydns = {};
+	var dbus_post = {};
+	var str = "";
+	var n = 5000;
+	var i = 0;
+	var sr_content = E("querydns_uesr_domain").value;
 	if(flag){
 	console.log(flag)
 	}
@@ -220,6 +252,17 @@ function save(flag){
 			db_querydns[params_input[i]] = E(params_input[i]).value;
 		}
 	} 
+	if (sr_content != "") {
+		str = Base64.encode(encodeURIComponent(sr_content));
+		for (l = str.length; i < l / n; i++) {
+			var a = str.slice(n * i, n * (i + 1));
+			dbus_post[`querydns_uesr_domain_content_${i}`] = db_querydns[`querydns_uesr_domain_content_${i}`] = a;
+		}
+		dbus_post[`querydns_uesr_domain_content_count`] = db_querydns[`querydns_uesr_domain_content_count`] = i;
+	} else {
+		dbus_post[`querydns_uesr_domain_content_0`] = db_querydns[`querydns_uesr_domain_content_0`] = " ";
+		dbus_post[`querydns_uesr_domain_content_count`] = db_querydns[`querydns_uesr_domain_content_count`] = 1;
+	}
 	var id = parseInt(Math.random() * 100000000);
 	var postData = {"id": id, "method": "querydns_config.sh", "params": ["check"], "fields": db_querydns};
 	$.ajax({
