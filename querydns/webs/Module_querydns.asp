@@ -208,8 +208,8 @@ function register_event(){
 function get_usertxt() {
 	var id = parseInt(Math.random() * 100000000);
 	var dbus_post={};
-	var postData = {"id": id, "method": "querydns_config.sh", "params":[getln], "fields": dbus_post};
-	intoQueue({
+	var postData = {"id": id, "method": "querydns_config.sh", "params": ["getln"], "fields": db_querydns};
+	$.ajax({
 		type: "POST",
 		cache:false,
 		url: "/_api/",
@@ -222,13 +222,16 @@ function get_usertxt() {
 
 function userdns_show() {
 	get_usertxt()
-	intoQueue({
+	$.ajax({
 		url: '/_temp/querydns_user.txt',
 		type: 'GET',
 		cache: false,
 		dataType: 'text',
 		success: function (res) {
 			$('#querydns_uesr_domain').val(res);
+		},
+		error: function(xhr) {
+			$('#querydns_uesr_domain').val('');
 		}
 		});
 	//展示

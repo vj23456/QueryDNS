@@ -116,4 +116,11 @@ check)
     echo DD01N05S | tee -a ${LOG_FILE}
 	unset_lock
 	;;
+getln)
+    if [ -f "/koolshare/configs/querydns/user_dns.txt" ]; then
+        ln -sf /koolshare/configs/querydns/user_dns.txt /tmp/upload/querydns_user.txt
+    else
+        rm -rf /tmp/upload/querydns_user.txt
+    fi
+	;;
 esac
