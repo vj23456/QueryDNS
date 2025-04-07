@@ -4,7 +4,7 @@
 `运行于ARM KoolCenter软件中心的，是一款由Golang写的支持UDP / TCP / DNS over TLS / DNS over Https / DNS over QUIC等DNS可用性查询的强大网络工具
 
 ## 二进制项目地址
-[https://github.com/gdy666/lucky](https://github.com/natesales/q)
+https://github.com/natesales/q
 
 
 ## 机型支持
