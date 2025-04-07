@@ -235,7 +235,7 @@ function get_usertxt() {
 function common_text_editor_open(type, title) {
 	get_usertxt();
 	$("#common_text_editor_title").html(title);
-	$("#common_text_editor_content").html('更多设置内容，请查阅 <a href="https://wiki.metacubex.one/config/sniff/" target="_blank">Mihomo帮助文档-Sniffer</a> 。');
+	$("#common_text_editor_content").html('更多DNS服务器，请查阅 <a href="https://github.com/curl/curl/wiki/DNS-over-HTTPS" target="_blank">常用DoH列表</a> 。');
 	$.ajax({
 		url: '/_temp/querydns_user.txt',
 		type: 'GET',
@@ -483,12 +483,12 @@ function validateInput(input, minValue, maxValue) {
 	<!-- 通用编辑框-->
     <div id="common_text_editor" class="contentMKP_qis" style="box-shadow: 3px 3px 10px #000;margin-top: -65px;display: none;">
 		<div class="user_title">编辑<span id="common_text_editor_title">未知</span></div>
-		<div style="margin-left:15px"><i>1&nbsp;&nbsp;更改配置内容后，需要重启Merlin Clash才能生效；</i></div>
+		<div style="margin-left:15px"><i>1&nbsp;&nbsp;请输入DNS服务器地址，一行一个；</i></div>
 		<div style="margin-left:15px"><i>2&nbsp;&nbsp;<span id="common_text_editor_content">更多设置内容，请查阅https://docs.metacubex.one/</span></i></div>
 		<div style="margin: 10px 10px 10px 10px;width:98%;text-align:center;">
 			<textarea cols="63" rows="16" wrap="off" id="common_text_editor_text" autocomplete="off" autocorrect="off"
 			autocapitalize="off" spellcheck="false"
-			style="border: none; width: 760px;height:400px ;background: black; color: white; resize: none;"></textarea>
+			style="border: none; width: 760px;height:400px ;background: black; color: white; resize: none; " placeholder="请输入您想查询的DNS，如：&#10;223.5.5.5&#10;tls://dot.pub&#10;https://doh.pub/dns-query&#10;quic://dns.yuguan.xyz"></textarea>
 		</div>
 		<div style="margin-top:5px;padding-bottom:10px;width:100%;text-align:center;">
 			<input id="common_text_editor_save" class="button_gen" type="button"  value="保存设置">
@@ -590,10 +590,8 @@ function validateInput(input, minValue, maxValue) {
 										</div>
 										<div style="margin: 10px 0 10px 5px;" class="splitLine"></div>
 										<div style="margin:10px 0 0 5px">
-											<li>1.若无必要请务必不要开启设置里的<em>外网访问后台</em>!!!</li>
-											<li>2.若开启外网访问，请务必设置<em>足够复杂</em>的后台登录用户名/密码!!!</li>
-											<li>3.部分功能设置可能造成网络安全风险，不懂请务必<em>不要随意开启使用</em>!!!</li>
-											
+											<li>1.插件内置了部分常用DNS服务器，可直接食用；</li>
+											<li>2.更多DNS服务器列表可参看<a href="https://github.com/curl/curl/wiki/DNS-over-HTTPS" target="_blank"><em>常用DoH列表</em></a>！</li>	
 										</div>
 									</td>
 								</tr>

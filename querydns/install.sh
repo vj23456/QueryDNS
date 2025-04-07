@@ -71,15 +71,15 @@ exit_install(){
 	local state=$1
 	case $state in
 		1)
-			echo_date "本插件适用于【koolshare 梅林改/官改 hnd/axhnd/axhnd.675x】固件平台！"
+			echo_date "本插件适用于【koolshare 梅林改/官改 hnd/axhnd/axhnd.675x/MTK/IPQ23/IPQ64/QCA】固件平台！"
 			echo_date "你的固件平台不能安装！！!"
 			echo_date "本插件支持机型/平台：https://github.com/koolshare/rogsoft#rogsoft"
 			echo_date "退出安装！"
-			rm -rf /tmp/lucky* >/dev/null 2>&1
+			rm -rf /tmp/querydns* >/dev/null 2>&1
 			exit 1
 			;;
 		0|*)
-			rm -rf /tmp/lucky* >/dev/null 2>&1
+			rm -rf /tmp/querydns* >/dev/null 2>&1
 			exit 0
 			;;
 	esac
@@ -95,79 +95,47 @@ dbus_nset(){
 
 install_now() {
 	# default value
-	local TITLE="Lucky"
-	local DESCR="端口转发/DDNS/Web服务/Stun内网穿透/网络唤醒/计划任务/ACME自动证书/网络存储"
+	local TITLE="DNS查询"
+	local DESCR="UDP/DoT/DoH/DoQ等DNS服务器可用性查询"
 	local PLVER=$(cat ${DIR}/version)
 
-	# delete crontabs job first
-	if [ -n "$(cru l | grep lucky_watchdog)" ]; then
-		echo_date "删除Lucky看门狗任务..."
-		cru d lucky_watchdog 2>&1
-	fi
-
-	# stop ddns-go
-	local lucky_enable=$(dbus get lucky_enable)
-	local lucky_process=$(pidof lucky)
-	local lucky_install=$(dbus get softcenter_module_lucky_install)
-	if [ "$lucky_enable" == "1" -o -n "${lucky_process}" ];then
-		echo_date "先关闭Lucky插件！以保证更新成功！"
-		sh /koolshare/scripts/lucky_config.sh stop
-	fi
-
 	# create ddns-go config dirctory
-	mkdir -p /koolshare/configs/lucky
-	
+	mkdir -p /koolshare/configs/querydns
+
 	# remove some files first, old file should be removed, too
-	find /koolshare/init.d/ -name "*lucky*" | xargs rm -rf
-	rm -rf /koolshare/scripts/lucky*.sh 2>/dev/null
-	rm -rf /koolshare/scripts/*lucky.sh 2>/dev/null
-	rm -rf /koolshare/bin/lucky 2>/dev/null
+	find /koolshare/init.d/ -name "*querydns*" | xargs rm -rf
+	rm -rf /koolshare/scripts/querydns*.sh 2>/dev/null
+	rm -rf /koolshare/scripts/*querydns.sh 2>/dev/null
+	rm -rf /koolshare/bin/querydns 2>/dev/null
 
 	# isntall file
 	echo_date "安装插件相关文件..."
-	cp -rf /tmp/${module}/bin/lucky /koolshare/bin/
-	if [ "$lucky_install" != "1" ];then
-	cp -rf /tmp/${module}/bin/lucky_base.lkcf /koolshare/configs/lucky/
-  fi
+	cp -rf /tmp/${module}/bin/querydns /koolshare/bin/
 	cp -rf /tmp/${module}/res/* /koolshare/res/
 	cp -rf /tmp/${module}/scripts/* /koolshare/scripts/
+	cp -rf /tmp/${module}/querydns/* /koolshare/configs/querydns/
 	cp -rf /tmp/${module}/webs/* /koolshare/webs/
 	cp -rf /tmp/${module}/uninstall.sh /koolshare/scripts/uninstall_${module}.sh
 	
-	#创建开机自启任务
-	[ ! -L "/koolshare/init.d/S110lucky.sh" ] && ln -sf /koolshare/scripts/lucky_config.sh /koolshare/init.d/S110lucky.sh
-	[ ! -L "/koolshare/init.d/N110lucky.sh" ] && ln -sf /koolshare/scripts/lucky_config.sh /koolshare/init.d/N110lucky.sh
-
 	# Permissions
-	chmod +x /koolshare/scripts/lucky* >/dev/null 2>&1
-	chmod +x /koolshare/scripts/*lucky.sh >/dev/null 2>&1
-	chmod +x /koolshare/bin/lucky >/dev/null 2>&1
+	chmod +x /koolshare/scripts/querydns* >/dev/null 2>&1
+	chmod +x /koolshare/scripts/*querydns.sh >/dev/null 2>&1
+	chmod +x /koolshare/bin/querydns >/dev/null 2>&1
 
 	# dbus value
 	echo_date "设置插件默认参数..."
-	dbus set lucky_version="${PLVER}"
-	dbus set lucky_binary="2.10.9"
-	dbus set softcenter_module_lucky_version="${PLVER}"
-	dbus set softcenter_module_lucky_install="1"
-	dbus set softcenter_module_lucky_name="${module}"
-	dbus set softcenter_module_lucky_title="${TITLE}"
-	dbus set softcenter_module_lucky_description="${DESCR}"
+	dbus set querydns_version="${PLVER}"
+	binary=$(querydns -V | awk '{print $3}')
+	dbus set querydns_binary="$binary"
+	dbus set softcenter_module_querydns_version="${PLVER}"
+	dbus set softcenter_module_querydns_install="1"
+	dbus set softcenter_module_querydns_name="${module}"
+	dbus set softcenter_module_querydns_title="${TITLE}"
+	dbus set softcenter_module_querydns_description="${DESCR}"
 
 	# 检查插件默认dbus值
-	dbus_nset lucky_watchdog "0"
-	dbus_nset lucky_enable "0"
-	dbus_nset lucky_port "16601"
-	dbus_nset lucky_reset_disable "0"
-	dbus_nset lucky_reset_port "0"
-	dbus_nset lucky_reset_safeurl "0"
-	dbus_nset lucky_reset_user "0"
-	dbus_nset lucky_safeurl "0"
-
-	# re_enable
-	if [ "${lucky_enable}" == "1" ];then
-		echo_date "重新启动Lucky插件！"
-		sh /koolshare/scripts/lucky_config.sh boot_up
-	fi
+	dbus_nset querydns_check_basic "1"
+	dbus_nset querydns_check_domain "www.youtube.com"
 
 	# finish
 	echo_date "${TITLE}插件安装完毕！"

@@ -125,6 +125,7 @@ check_dns() {
 			echo "--------------------------------------------------------------------------------------------"
 			querydns @$line $domain $command 2>&1
 			echo "--------------------------------------------------------------------------------------------"
+			echo ""
 		done
 	else
 		echo_date "🤷‍♂️插件内置常用DNS查询未开启，跳过"
@@ -141,6 +142,7 @@ check_dns() {
 				echo "--------------------------------------------------------------------------------------------"
 				querydns @$line $domain $command 2>&1
 				echo "--------------------------------------------------------------------------------------------"
+				echo ""
 			done
 		else
 			echo_date "🤷‍♂️用户自定义DNS列表为空，跳过"
@@ -150,6 +152,26 @@ check_dns() {
 	fi
 	close_querydns_process
 }
+
+case $1 in
+check)
+	set_lock
+	rm -rf ${LOG_FILE}
+    check_dns | tee -a ${LOG_FILE}
+    echo DD01N05S | tee -a ${LOG_FILE}
+	unset_lock
+	;;
+save)
+	save_user_dns
+	;;
+getln)
+    if [ -f "/koolshare/configs/querydns/user_dns.txt" ]; then
+        ln -sf /koolshare/configs/querydns/user_dns.txt /tmp/upload/querydns_user.txt
+    else
+        rm -rf /tmp/upload/querydns_user.txt
+    fi
+	;;
+esac
 
 case $2 in
 check)

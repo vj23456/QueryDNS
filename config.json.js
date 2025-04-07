@@ -1,11 +1,11 @@
 {
-    "author": "vj23456, kiritoknight", 
-    "description": "端口转发/DDNS/Web服务/Stun内网穿透/网络唤醒/计划任务/ACME自动证书/网络存储", 
-    "home_url": "Module_lucky.asp", 
-    "link": "https://github.com/vj23456/MerlinLucky", 
+    "author": "vj23456", 
+    "description": "UDP/DoT/DoH/DoQ等DNS服务器可用性查询", 
+    "home_url": "Module_querydns.asp", 
+    "link": "https://github.com/vj23456/QueryDNS", 
     "md5": "44ca9b43b762bb0b24b49d6c40fb044f", 
-    "module": "lucky", 
+    "module": "querydns", 
     "tags": "工具", 
-    "title": "Lucky", 
-    "version": "1.4.4"
+    "title": "DNS查询", 
+    "version": "1.0"
 }
