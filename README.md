@@ -1,4 +1,4 @@
-# QuerDNS
+# QueryDNS
 
 ## 是什么？
 运行于ARM KoolCenter软件中心的，是一款由Golang写的支持UDP / TCP / DNS over TLS / DNS over Https / DNS over QUIC等DNS可用性查询的强大网络工具
