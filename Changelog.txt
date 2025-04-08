@@ -1,6 +1,5 @@
 KoolCenter QueryDNS Changelog
 ===========================================
 
-
 1.0
    - add        上线

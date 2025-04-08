@@ -278,7 +278,7 @@ function common_text_editor_save(type) {
 	}
 	//post data
 	var id = parseInt(Math.random() * 100000000);
-	var postData = { "id": id, "method": "querydns_config.sh", "params": ["save"], "fields": ""};
+	var postData = { "id": id, "method": "querydns_config.sh", "params": ["save"], "fields": dbus_post};
 	$.ajax({
 		type: "POST",
 		cache: false,

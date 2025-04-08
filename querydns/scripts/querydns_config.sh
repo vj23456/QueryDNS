@@ -69,11 +69,11 @@ close_querydns_process(){
 	fi
 }
 save_user_dns(){
-	if [ -n "$count" ];then
+	if [ -n "$querydns_uesr_domain_content_count" ];then
 	i=0
-	while [ "$i" -lt "$count" ]
+	while [ "$i" -lt "$querydns_uesr_domain_content_count" ]
 	do
-		txt=$(${querydns_uesr_domain_content}_$i)
+		txt=$(dbus get querydns_uesr_domain_content_$i)
 		#开始拼接文件值，然后进行base64解码，写回文件
 		content=${content}${txt}
 		let i=i+1
@@ -153,36 +153,20 @@ check_dns() {
 	close_querydns_process
 }
 
-case $1 in
-check)
-	set_lock
-	rm -rf ${LOG_FILE}
-    check_dns | tee -a ${LOG_FILE}
-    echo DD01N05S | tee -a ${LOG_FILE}
-	unset_lock
-	;;
-save)
-	save_user_dns
-	;;
-getln)
-    if [ -f "/koolshare/configs/querydns/user_dns.txt" ]; then
-        ln -sf /koolshare/configs/querydns/user_dns.txt /tmp/upload/querydns_user.txt
-    else
-        rm -rf /tmp/upload/querydns_user.txt
-    fi
-	;;
-esac
 
 case $2 in
 check)
 	set_lock
 	rm -rf ${LOG_FILE}
+	true > ${LOG_FILE}
+	http_response "$1"
     check_dns | tee -a ${LOG_FILE}
     echo DD01N05S | tee -a ${LOG_FILE}
 	unset_lock
 	;;
 save)
 	save_user_dns
+	http_response $1
 	;;
 getln)
     if [ -f "/koolshare/configs/querydns/user_dns.txt" ]; then

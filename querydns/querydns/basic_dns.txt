@@ -1,22 +1,18 @@
-https://public.dns.iij.jp/dns-query
-https://dns.twnic.tw/dns-query
-tcp://208.67.222.222:443
-tls://dns.google
 https://unfiltered.adguard-dns.com/dns-query
 tls://unfiltered.adguard-dns.com
-https ://dns.adguard-dns.com/dns-query
+https://dns.adguard-dns.com/dns-query
 tls://dns.adguard-dns.com
 quic://dns.adguard-dns.com
 https://dns.bebasid.com/dns-query
 tls://dns.bebasid.com:853
-https://doh.opendns.com/dns-query
-https ://mozilla.cloudflare-dns.com/dns-query 
-https://cloudflare-dns.com/dns-query
-https://freedns.controld.com/p0
 https://dns.csaonline.de/dns-query
 https://open.dns0.eu
 https://dns.dns-53.us/dns-query
-https://dns.dnshome.de/dns-query
-https://ordns.he.net
-https://dns.nextdns.io/
-https://dns.quad9.net/dns-query
+https://jp01.dns4me.net
+tls://jp01.dns4me.net
+https://sg01.dns4me.net
+tls://sg01.dns4me.net
+https://sin03.dnscry.pt/dns-query
+tls://sin03.dnscry.pt
+https://tyo02.dnscry.pt/dns-query
+tls://tyo02.dnscry.pt
