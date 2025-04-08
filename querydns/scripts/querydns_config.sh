@@ -38,10 +38,8 @@ b(){
 		base=base64
 		echo $base
 	else
-		echo_date "【错误】固件缺少base64decode文件，无法正常订阅，直接退出" >> $LOG_FILE
-		echo_date "解决办法请查看MerlinClash Wiki" >> $LOG_FILE
-		echo BBABBBBC >> $LOG_FILE
-		exit 1
+		echo_date "【错误】固件缺少base64decode文件，无法查询"
+		echo DD01N05S
 	fi
 }
 decode_url_link(){
