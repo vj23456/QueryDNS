@@ -1,5 +1,5 @@
 {
-    "author": "vj23456", 
+    "author": "vj23456, fiswonder", 
     "description": "UDP/DoT/DoH/DoQ等DNS服务器可用性查询", 
     "home_url": "Module_querydns.asp", 
     "link": "https://github.com/vj23456/QueryDNS", 
