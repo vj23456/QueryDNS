@@ -464,14 +464,14 @@ function validateInput(input, minValue, maxValue) {
 	<div id="LoadingBar" class="popup_bar_bg_ks" style="z-index: 201;" >
 		<table cellpadding="5" cellspacing="0" id="loadingBarBlock" class="loadingBarBlock" align="center">
 			<tr>
-				<td height="100">
+				<td height="600">
 					<div id="loading_block_title" style="margin:10px auto;margin-left:10px;width:85%; font-size:12pt;"></div>
 					<div id="loading_block_spilt" style="margin:10px 0 10px 5px;" class="loading_block_spilt">
 						<li><font color="#ffcc00">请等待日志显示完毕，并出现自动关闭按钮！</font></li>
 						<li><font color="#ffcc00">在此期间请不要刷新本页面，不然可能导致问题！</font></li>
 					</div>
-					<div style="margin-left:15px;margin-right:15px;margin-top:10px;outline: 1px solid #3c3c3c;overflow:hidden">
-						<textarea cols="50" rows="25" wrap="off" readonly="readonly" id="log_content" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="border:1px solid #000;width:99%; font-family:'Lucida Console'; font-size:11px;background:transparent;color:#FFFFFF;outline: none;padding-left:5px;padding-right:22px;overflow-x:hidden"></textarea>
+					<div style="height:76%;margin-left:15px;margin-right:15px;margin-top:10px;outline: 1px solid #3c3c3c;overflow:hidden">
+						<textarea cols="50" rows="25" wrap="off" readonly="readonly" id="log_content" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="height:98%;border:1px solid #000;width:99%; font-family:'Lucida Console'; font-size:11px;background:transparent;color:#FFFFFF;outline: none;padding-left:5px;padding-right:22px;overflow-x:hidden"></textarea>
 					</div>
 					<div id="ok_button" class="apply_gen" style="background:#000;visibility:hidden;">
 						<input id="ok_button1" class="button_gen" type="button" onclick="hideALLoadingBar()" value="确定">
