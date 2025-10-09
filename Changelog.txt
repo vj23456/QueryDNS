@@ -1,5 +1,7 @@
 KoolCenter QueryDNS Changelog
 ===========================================
+1.2
+   - update     更新内核至v0.19.9
 
 1.1
    - fix        更换插件图标
