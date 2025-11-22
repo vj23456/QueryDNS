@@ -7,5 +7,5 @@
     "module": "querydns", 
     "tags": "工具", 
     "title": "DNS查询", 
-    "version": "1.2"
+    "version": "1.3"
 }
